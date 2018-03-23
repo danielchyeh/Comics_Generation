@@ -14,7 +14,8 @@ Download Link: https://drive.google.com/drive/folders/1bXXeEzARYWsvUwbW3SA0meulC
 ./run.sh [test file]
 ```
 [test file] should be <testing_text.txt> in the main folder. You can modify content if want different result.
-
+## Training
+In image_generationv1.py, change mode = 1 (line 20) to be mode = 0, then do the Quick Start!
 ## Demo Results
 Generated Samples will be like
 
