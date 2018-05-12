@@ -164,7 +164,7 @@ class Data(object):
 		return img, hot, a_tags, self.img_feat[widx], self.one_hot[widx]
 
 	def next_noise_batch(self, size, dim):
-		return self.z_sampler.rvs([size, dim]) #np.random.uniform(-1.0, 1.0, [size, dim])
+		return np.random.uniform(-1.0, 1.0, [size, dim])#z_sampler.rvs([size, dim])
 
 
 

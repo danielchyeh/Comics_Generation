@@ -3,7 +3,7 @@ import tensorflow.contrib as tc
 import numpy as np
 import os
 import time
-from model import Generator, Discriminator, Sampler
+from model import Generator, Discriminator
 import data_utils
 
 
@@ -30,16 +30,12 @@ class DCGAN:
         self.g_net = Generator( 
 						max_seq_length=self.data.tags_idx.shape[1], 
 						img_row=self.img_row,
-						img_col=self.img_col)
+						img_col=self.img_col,
+                        train=True)
         self.d_net = Discriminator( 
 						max_seq_length=self.data.tags_idx.shape[1], 
 						img_row=self.img_row,
 						img_col=self.img_col)
-        self.s_net = Sampler( 
-						max_seq_length=self.data.tags_idx.shape[1], 
-						img_row=self.img_row,
-						img_col=self.img_col)
-        
         
 
         self.t_real_image = tf.placeholder(tf.float32, [None, self.img_row, self.img_col, 3], name="img")
@@ -48,17 +44,16 @@ class DCGAN:
         self.t_wrong_caption = tf.placeholder(tf.float32, [None, len(self.data.eyes_idx)+len(self.data.hair_idx)], name="w_seq")
         self.t_z = tf.placeholder(tf.float32, [None, self.m_options['z_dim']])
 
-        self.fake_image = self.g_net(self.t_real_caption, self.t_z)
-		
 
-        self.sampler = self.s_net(self.t_real_caption, self.t_z)
+        self.fake_image = self.g_net(self.t_real_caption, self.t_z, train=True)
 
 
-
-        self.d = self.d_net(self.t_real_caption, self.t_real_image, reuse=False) 	# r img, r text
         self.d_1 = self.d_net(self.t_real_caption, self.fake_image) 		# f img, r text
-        self.d_2 = self.d_net(self.t_wrong_caption, self.t_real_image)		# r img, w text
-        self.d_3 = self.d_net(self.t_real_caption, self.t_wrong_image)		# w img, r text
+        self.d = self.d_net(self.t_real_caption, self.t_real_image, reuse=True) 	# r img, r text
+        self.d_2 = self.d_net(self.t_wrong_caption, self.t_real_image, reuse=True)		# r img, w text
+        self.d_3 = self.d_net(self.t_real_caption, self.t_wrong_image, reuse=True)		# w img, r text
+        
+        self.sampler = tf.identity(self.g_net(self.t_real_caption, self.t_z, reuse=True, train=False), name='sampler')
         
         
 
@@ -70,16 +65,18 @@ class DCGAN:
 					   tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_3, labels=tf.zeros_like(self.d_3))) ) / 3 
         
         
-        self.d_vars = self.d_net.vars
-        self.g_vars = self.g_net.vars
+        self.d_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'd_net')
+        self.g_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'g_net')
+        
         
         self.global_step = tf.Variable(0, name='g_global_step', trainable=False)
+        
+        self.d_updates = tf.train.AdamOptimizer(self.m_options['learn_rate'], 0.5, 0.9).minimize(loss=self.d_loss, var_list=self.d_vars) #, epsilon=1e-08, decay=0.0
 
-
-        with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
-            self.d_updates = tf.train.AdamOptimizer(self.m_options['learn_rate'], beta1=0.5, beta2=0.9).minimize(self.d_loss, var_list=self.d_vars)
-            self.g_updates = tf.train.AdamOptimizer(self.m_options['learn_rate'], beta1=0.5, beta2=0.9).minimize(self.g_loss, var_list=self.g_vars, global_step=self.global_step)
-
+        update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+        with tf.control_dependencies(update_ops):
+            self.g_updates  = tf.train.AdamOptimizer(self.m_options['learn_rate'], 0.5, 0.9).minimize(loss=self.g_loss, var_list=self.g_vars, global_step=self.global_step)
+        
         
         
 
@@ -137,7 +134,6 @@ class DCGAN:
         
     
     def train(self, input_tensors, variables, loss, outputs, checks):  
-#        batch_num = data.length//args.batch_size if data.length%args.batch_size==0 else data.length//args.batch_size + 1
         
         print("Start training DCGAN...\n")
         
@@ -158,9 +154,12 @@ class DCGAN:
                         input_tensors['t_wrong_image']:w_img
                         }
         
-                _, loss = self.sess.run([self.d_updates, self.d_loss], feed_dict=feed_dict)
+                loss, _ = self.sess.run([self.d_loss, self.d_updates], feed_dict=feed_dict)
         
                 d_cost += loss/self.d_epoch
+                
+                
+                
         
             z = self.data.next_noise_batch(len(tags), self.t_options['z_dim'])
             feed_dict = {
@@ -171,8 +170,9 @@ class DCGAN:
                     input_tensors['t_z']:z
                     }
         
-            _, loss, step = self.sess.run([self.g_updates, self.g_loss, self.global_step], feed_dict=feed_dict)
-        #    _, loss = sess.run([g_updates, loss['g_loss']], feed_dict=feed_dict)
+            #_, loss, step = self.sess.run([self.g_updates, self.g_loss, self.global_step], feed_dict=feed_dict)
+            generated, loss, _, step = self.sess.run([outputs['generator'], self.g_loss, self.g_updates, self.global_step], feed_dict=feed_dict)
+            #_, loss = sess.run([outputs['generator'], g_updates, loss['g_loss']], feed_dict=feed_dict)
             current_step = tf.train.global_step(self.sess, self.global_step)
         
             g_cost = loss
