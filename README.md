@@ -1,9 +1,9 @@
-# Comics_Generation
-MLDS2017 Project 4
+# Comics_Generation in TensorFlow
+NTU MLDS2017 Project 4
 
 Project Link: https://www.csie.ntu.edu.tw/~yvchen/f106-adl/A4
 
-Conditional Generative Adversarial Network (CGAN) is implemented to automatically generate anime images based on the given constraints (ex: green hair, blue eyes). The images are synthesized using the GAN-CLS Algorithm from the paper [Generative Adversarial Text-to-Image Synthesis](https://arxiv.org/abs/1605.05396). The following flow chart is the model structure.
+Tensorflow implementation of Conditional Generative Adversarial Network (CGAN) automatically generates anime images based on given constraints (ex: green hair, blue eyes ..etc). The images are synthesized using the GAN-CLS Algorithm from the paper [Generative Adversarial Text-to-Image Synthesis](https://arxiv.org/abs/1605.05396). The following is the model structure.
 
 ![image](https://github.com/danielchyeh/Comics_Generation/blob/master/assets/model%20structure.jpg)
 
