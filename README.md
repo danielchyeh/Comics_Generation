@@ -19,5 +19,5 @@ In image_generationv1.py, change mode = 1 (line 20) to be mode = 0, then do the 
 ## Demo Results
 Generated Samples will be like
 
-![image](https://github.com/danielchyeh/Comics_Generation/blob/master/assets/sample_results.png)
+![image](https://github.com/danielchyeh/Comics_Generation/blob/master/assets/samples.png)
 
