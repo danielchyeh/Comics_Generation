@@ -40,3 +40,5 @@ Generated Samples will be like
 - [paarthneekhara/text-to-image](https://github.com/paarthneekhara/text-to-image)
 
 - [carpedm20/DCGAN-tensorflow](https://github.com/carpedm20/DCGAN-tensorflow)
+
+- [m516825/Conditional-GAN](https://github.com/m516825/Conditional-GAN)
