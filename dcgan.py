@@ -5,6 +5,7 @@ import os
 import time
 from model import Generator, Discriminator
 import data_utils
+from scipy import misc
 
 
 class DCGAN:    
@@ -114,7 +115,7 @@ class DCGAN:
     
     
     def test(self): 
-        
+        """
         print("Start testing DCGAN...\n")
         current_step = tf.train.global_step(self.sess, self.global_step)
         
@@ -129,6 +130,30 @@ class DCGAN:
         
             data_utils.test_dump_img(self.t_options['img_dir'], f_imgs, current_step, num_pic+1)
                                     
+        print("Dump test image")  
+        """
+        
+        print("Start testing DCGAN...\n")
+        #current_step = tf.train.global_step(self.sess, self.global_step)
+        
+        for j in range(len(self.data.test_tags_idx)) :
+            #batch_tag = np.tile(self.data.test_tags_idx[j], (4,1))
+            #print("batch tag shape: {}".format(batch_tag.shape))
+            
+            #z = self.data.fixed_z
+            
+            batch_y = np.tile(self.data.test_tags_idx[j], (5,1))
+            noise = np.random.uniform(-1, 1, [batch_y.shape[0], 100]) 
+            
+            f_imgs = self.sess.run(self.sampler, feed_dict={self.t_real_caption:batch_y, self.t_z:noise})
+            
+            for i in range(5):
+                img_feats = (f_imgs[i] + 1.)/2 * 255.
+                img_feats = np.array(img_feats, dtype=np.uint8)
+                
+                path = os.path.join(self.t_options['img_dir'], 'sample_{}_{}.jpg'.format(j+1, i+1))
+                misc.imsave(path, img_feats)
+        
         print("Dump test image")  
         
         
