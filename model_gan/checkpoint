@@ -1,6 +1,0 @@
-model_checkpoint_path: "gan_190000.ckpt"
-all_model_checkpoint_paths: "gan_182000.ckpt"
-all_model_checkpoint_paths: "gan_184000.ckpt"
-all_model_checkpoint_paths: "gan_186000.ckpt"
-all_model_checkpoint_paths: "gan_188000.ckpt"
-all_model_checkpoint_paths: "gan_190000.ckpt"
