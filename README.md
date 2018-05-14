@@ -23,4 +23,5 @@ Generated Samples will be like
 
 ## References
 [paarthneekhara/text-to-image](https://github.com/paarthneekhara/text-to-image)
+
 [carpedm20/DCGAN-tensorflow](https://github.com/carpedm20/DCGAN-tensorflow)
