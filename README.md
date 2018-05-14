@@ -22,6 +22,6 @@ Generated Samples will be like
 ![image](https://github.com/danielchyeh/Comics_Generation/blob/master/assets/samples.png)
 
 ## References
-[paarthneekhara/text-to-image](https://github.com/paarthneekhara/text-to-image)
+- [paarthneekhara/text-to-image](https://github.com/paarthneekhara/text-to-image)
 
-[carpedm20/DCGAN-tensorflow](https://github.com/carpedm20/DCGAN-tensorflow)
+- [carpedm20/DCGAN-tensorflow](https://github.com/carpedm20/DCGAN-tensorflow)
