@@ -10,7 +10,8 @@ Conditional Generative Adversarial Network (CGAN) is implemented to automaticall
 Image source is from the paper [Generative Adversarial Text-to-Image Synthesis](https://arxiv.org/abs/1605.05396).
 
 ## Dataset
-Download Link: https://drive.google.com/drive/folders/1bXXeEzARYWsvUwbW3SA0meulCR3nIhDb. tag_clean.csv includes multiple tags (hair color, eyes color, etc..) for each anime image. 
+- Download Link: https://drive.google.com/drive/folders/1bXXeEzARYWsvUwbW3SA0meulCR3nIhDb. 
+- tag_clean.csv includes multiple tags (hair color, eyes color, etc..) for each anime image. 
 ## Quick start
 1. Download Dataset from link above.
 
@@ -18,11 +19,11 @@ Download Link: https://drive.google.com/drive/folders/1bXXeEzARYWsvUwbW3SA0meulC
 ```
 ./run.sh [test file]
 ```
-[test file] should be <testing_text.txt> in the main folder. You can modify content if want different result.
+- [test file] should be <testing_text.txt> in the main folder. You can modify content if want different result.
 ## Training
-In image_generation.py, change mode = 1 (line 20) to be mode = 0, then do the Quick Start!
+- In image_generation.py, change mode = 1 (line 20) to be mode = 0, then do the Quick Start!
 ## Demo Results
-We test our model with test file below (testing_text.txt)
+- We test our model with test file below (testing_text.txt)
 
 ```
 1,blue hair blue eyes
@@ -32,7 +33,7 @@ We test our model with test file below (testing_text.txt)
 5,green hair blue eyes
 ```
 
-Generated Samples will be like
+- Generated Samples
 
 ![image](https://github.com/danielchyeh/Comics_Generation/blob/master/assets/samples.png)
 
