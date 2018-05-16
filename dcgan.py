@@ -29,14 +29,15 @@ class DCGAN:
     def build_model(self):  
     
         self.g_net = Generator( 
-						max_seq_length=self.data.tags_idx.shape[1], 
-						img_row=self.img_row,
-						img_col=self.img_col,
-                        train=True)
+		max_seq_length=self.data.tags_idx.shape[1], 
+		img_row=self.img_row,
+		img_col=self.img_col,
+        	train=True)
+
         self.d_net = Discriminator( 
-						max_seq_length=self.data.tags_idx.shape[1], 
-						img_row=self.img_row,
-						img_col=self.img_col)
+		max_seq_length=self.data.tags_idx.shape[1], 
+		img_row=self.img_row,
+		img_col=self.img_col)
         
 
         self.t_real_image = tf.placeholder(tf.float32, [None, self.img_row, self.img_col, 3], name="img")
@@ -49,10 +50,10 @@ class DCGAN:
         self.fake_image = self.g_net(self.t_real_caption, self.t_z, train=True)
 
 
-        self.d_1 = self.d_net(self.t_real_caption, self.fake_image) 		# f img, r text
-        self.d = self.d_net(self.t_real_caption, self.t_real_image, reuse=True) 	# r img, r text
-        self.d_2 = self.d_net(self.t_wrong_caption, self.t_real_image, reuse=True)		# r img, w text
-        self.d_3 = self.d_net(self.t_real_caption, self.t_wrong_image, reuse=True)		# w img, r text
+        self.d_1 = self.d_net(self.t_real_caption, self.fake_image) # f img, r text
+        self.d = self.d_net(self.t_real_caption, self.t_real_image, reuse=True) # r img, r text
+        self.d_2 = self.d_net(self.t_wrong_caption, self.t_real_image, reuse=True) # r img, w text
+        self.d_3 = self.d_net(self.t_real_caption, self.t_wrong_image, reuse=True) # w img, r text
         
         self.sampler = tf.identity(self.g_net(self.t_real_caption, self.t_z, reuse=True, train=False), name='sampler')
         
@@ -61,9 +62,9 @@ class DCGAN:
         self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_1, labels=tf.ones_like(self.d_1))) 
 
         self.d_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d, labels=tf.ones_like(self.d))) \
-					+ (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_1, labels=tf.zeros_like(self.d_1))) + \
-					   tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_2, labels=tf.zeros_like(self.d_2))) +\
-					   tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_3, labels=tf.zeros_like(self.d_3))) ) / 3 
+			+ (tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_1, labels=tf.zeros_like(self.d_1))) + \
+			tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_2, labels=tf.zeros_like(self.d_2))) +\
+			tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_3, labels=tf.zeros_like(self.d_3))) ) / 3 
         
         
         self.d_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'd_net')
